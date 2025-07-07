@@ -40,6 +40,14 @@ for f in files:
 
 print(f"🧠 Total diff characters: {len(diff_text)}")
 
+MAX_CHARS = 6000
+if len(diff_text) > MAX_CHARS:
+    print(f"⚠️ Diff text too long ({len(diff_text)} chars). Truncating to {MAX_CHARS} chars.")
+    diff_text = diff_text[:MAX_CHARS]
+else:
+    print(f"✅ Diff text within limit: {len(diff_text)} chars.")
+    
+
 # Prepare messages for review
 messages = [
     {
