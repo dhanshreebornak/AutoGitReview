@@ -56,9 +56,10 @@ messages = [
 try:
     print("🤖 Calling OpenRouter ChatCompletion...")
     response = client.chat.completions.create(
-    model="anthropic/claude-3-sonnet",  # ✅ switch from openai/gpt-3.5-turbo
+    model="mistralai/mixtral-8x7b",
     messages=messages,
-    )
+    max_tokens=1000,
+        )
     review_comment = response.choices[0].message.content
     print("✅ Received AI response. Posting comment to PR...")
     pr.create_issue_comment(f"🤖 **AI Review Summary** (via OpenRouter):\n\n{review_comment}")
