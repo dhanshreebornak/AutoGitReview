@@ -37,5 +37,5 @@ try:
         model="openai/gpt-3.5-turbo",  # You can use other OpenRouter models like mistralai/mixtral-8x7b
         messages=messages,
     )
-    review_comment = response.choices[0].message.content
-    pr.create_issue_comment(f"🤖 **AI Review Summary** (via OpenRouter):\n\n{
+       review_comment = response.choices[0].message.content
+    pr.create_issue_comment(f"🤖 **AI Review Summary** (via OpenRouter):\n\n{review_comment}")
