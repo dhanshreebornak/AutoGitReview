@@ -63,6 +63,10 @@ messages = [
 # Try AI review
 try:
     print("🤖 Calling OpenRouter ChatCompletion...")
+    print("📋 Fetching model list from OpenRouter...")
+    models = client.models.list()
+    for m in models.data:
+        print("✅ Available:", m.id)
     response = client.chat.completions.create(
     model="openrouter/cinematika-7b",
     messages=messages,
