@@ -68,7 +68,7 @@ try:
     for m in models.data:
         print("✅ Available:", m.id)
     response = client.chat.completions.create(
-    model="openrouter/cinematika-7b",
+    model="anthropic/claude-3.5-sonnet:beta",
     messages=messages,
     max_tokens=1000,
         )
