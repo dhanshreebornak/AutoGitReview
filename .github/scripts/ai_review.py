@@ -1,6 +1,6 @@
 import os
 import sys
-import openai
+from openai import OpenAI, APIError, RateLimitError, AuthenticationError, NotFoundError
 from github import Github
 
 # Get environment variables
@@ -39,19 +39,23 @@ messages = [
 
 # Try AI review
 try:
-    response = openai.ChatCompletion.create(
-        model="openai/gpt-3.5-turbo",  # You can also try: mistralai/mixtral-8x7b, anthropic/claude-3-sonnet
+    response = openai.ChatCompletion.create(  # or client.chat.completions.create() if using client
+        model="openai/gpt-3.5-turbo",
         messages=messages,
     )
     review_comment = response.choices[0].message.content
     pr.create_issue_comment(f"🤖 **AI Review Summary** (via OpenRouter):\n\n{review_comment}")
 
-except openai.error.AuthenticationError:
+except AuthenticationError:
     pr.create_issue_comment("❌ OpenRouter API authentication failed. Please check your API key.")
     sys.exit(1)
 
-except openai.error.RateLimitError:
+except RateLimitError:
     pr.create_issue_comment("⚠️ OpenRouter API rate limit reached. Try again later.")
+    sys.exit(1)
+
+except APIError as e:
+    pr.create_issue_comment(f"❌ OpenRouter API error: {str(e)}")
     sys.exit(1)
 
 except Exception as e:
