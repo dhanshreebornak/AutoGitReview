@@ -9,10 +9,11 @@ pat = os.environ.get("PAT_REPO_B")
 repo_name = os.environ.get("TARGET_REPO")
 pr_number = int(os.environ.get("TARGET_PR_NUMBER", 0))
 
-# Configure OpenRouter (OpenAI-compatible)
-openai.api_key = api_key
-openai.base_url = "https://openrouter.ai/api/v1"
-
+# Initialize OpenRouter (OpenAI-compatible) client
+client = OpenAI(
+    api_key=api_key,
+    base_url="https://openrouter.ai/api/v1",  # OpenRouter endpoint
+)
 # Initialize GitHub client
 gh = Github(pat)
 repo = gh.get_repo(repo_name)
