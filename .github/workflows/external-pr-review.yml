@@ -1,0 +1,35 @@
+name: Manual AI Review for External PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      repo:
+        description: 'Target repo (e.g. dhanshreebornak/other-repo)'
+        required: true
+      pr:
+        description: 'Target PR number (e.g. 5)'
+        required: true
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout current repo (for script)
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install openai PyGithub
+
+      - name: Run AI Review on external PR
+        run: python .github/scripts/ai_review.py
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PAT_REPO_B: ${{ secrets.PAT_REPO_B }}
+          TARGET_REPO: ${{ github.event.inputs.repo }}
+          TARGET_PR_NUMBER: ${{ github.event.inputs.pr }}
