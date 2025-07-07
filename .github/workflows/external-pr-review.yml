@@ -31,7 +31,7 @@ jobs:
       - name: Run AI Review Script for External PR
         run: python .github/scripts/ai_review.py
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           PAT_REPO_B: ${{ secrets.PAT_REPO_B }}
           TARGET_REPO: ${{ github.event.inputs.repo }}
           TARGET_PR_NUMBER: ${{ github.event.inputs.pr }}
