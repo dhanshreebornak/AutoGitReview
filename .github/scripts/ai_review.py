@@ -1,36 +1,27 @@
 import os
-import openai
 from github import Github
-from github.PullRequest import PullRequest
+import openai
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
-gh = Github(os.getenv("GITHUB_TOKEN"))
+openai.api_key = os.environ["OPENAI_API_KEY"]
+token = os.environ["PAT_REPO_B"]
+target_repo = os.environ["TARGET_REPO"]
+pr_number = int(os.environ["TARGET_PR_NUMBER"])
 
-repo_name = os.getenv("GITHUB_REPOSITORY")
-pr_number = os.getenv("GITHUB_REF").split("/")[-1]
-repo = gh.get_repo(repo_name)
-pr: PullRequest = repo.get_pull(int(pr_number))
-
-diff = pr.diff_url
+gh = Github(token)
+repo = gh.get_repo(target_repo)
+pr = repo.get_pull(pr_number)
 files = pr.get_files()
-summary = ""
 
-for file in files:
-    patch = file.patch or ""
-    summary += f"File: {file.filename}\nPatch:\n{patch}\n\n"
+diff_text = "\n".join([f.patch for f in files if hasattr(f, "patch")])
 
-# Send to OpenAI
-prompt = f"Review the following code diff and provide suggestions:\n\n{summary}"
-
+# Call OpenAI to analyze diff_text
 response = openai.ChatCompletion.create(
     model="gpt-4",
     messages=[
-        {"role": "system", "content": "You are a senior software engineer reviewing pull requests."},
-        {"role": "user", "content": prompt}
+        {"role": "system", "content": "You're a code reviewer AI."},
+        {"role": "user", "content": f"Review this diff:\n{diff_text}"}
     ]
 )
 
-review = response.choices[0].message['content']
-
-# Post comment on PR
-pr.create_issue_comment(f"### 🤖 AI Review Summary:\n{review}")
+# Post comment to the PR
+pr.create_issue_comment(f"🤖 AI Review Summary:\n{response['choices'][0]['message']['content']}")
