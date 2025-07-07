@@ -1,27 +1,45 @@
 import os
 from github import Github
-import openai
+from openai import OpenAI
 
-openai.api_key = os.environ["OPENAI_API_KEY"]
-token = os.environ["PAT_REPO_B"]
-target_repo = os.environ["TARGET_REPO"]
+# Get environment variables
+openai_api_key = os.environ["OPENAI_API_KEY"]
+pat = os.environ["PAT_REPO_B"]
+repo_name = os.environ["TARGET_REPO"]
 pr_number = int(os.environ["TARGET_PR_NUMBER"])
 
-gh = Github(token)
-repo = gh.get_repo(target_repo)
+# Init OpenAI client
+client = OpenAI(api_key=openai_api_key)
+
+# Init GitHub client
+gh = Github(pat)
+repo = gh.get_repo(repo_name)
 pr = repo.get_pull(pr_number)
 files = pr.get_files()
 
-diff_text = "\n".join([f.patch for f in files if hasattr(f, "patch")])
+# Collect diff
+diff_text = ""
+for f in files:
+    if hasattr(f, "patch"):
+        diff_text += f"### {f.filename}:\n{f.patch}\n\n"
 
-# Call OpenAI to analyze diff_text
-response = openai.ChatCompletion.create(
+# OpenAI Chat Completion (new format)
+response = client.chat.completions.create(
     model="gpt-4",
     messages=[
-        {"role": "system", "content": "You're a code reviewer AI."},
-        {"role": "user", "content": f"Review this diff:\n{diff_text}"}
+        {
+            "role": "system",
+            "content": "You are a code reviewer. Analyze the following code changes and provide feedback."
+        },
+        {
+            "role": "user",
+            "content": f"Please review the following PR diff:\n\n{diff_text}"
+        }
     ]
 )
 
-# Post comment to the PR
-pr.create_issue_comment(f"🤖 AI Review Summary:\n{response['choices'][0]['message']['content']}")
+# Get response content
+review_comment = response.choices[0].message.content
+
+# Post review as PR comment
+pr.create_issue_comment(f"🤖 **AI Review Summary**:\n\n{review_comment}")
