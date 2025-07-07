@@ -64,7 +64,7 @@ messages = [
 try:
     print("🤖 Calling OpenRouter ChatCompletion...")
     response = client.chat.completions.create(
-    model="mistralai/mixtral-8x7b-32768",
+    model="openrouter/cinematika-7b",
     messages=messages,
     max_tokens=1000,
         )
