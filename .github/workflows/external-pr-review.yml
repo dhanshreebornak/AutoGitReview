@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout current repo (for script)
+      - name: Checkout code (to get ai_review.py)
         uses: actions/checkout@v3
 
       - name: Set up Python
@@ -23,10 +23,12 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install dependencies
-        run: pip install openai PyGithub
+      - name: Install dependencies (latest OpenAI SDK)
+        run: |
+          pip install --upgrade pip
+          pip install openai PyGithub
 
-      - name: Run AI Review on external PR
+      - name: Run AI Review Script for External PR
         run: python .github/scripts/ai_review.py
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
