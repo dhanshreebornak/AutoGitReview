@@ -27,15 +27,33 @@ for f in files:
 
 # Prepare messages for review
 messages = [
-    {"role": "system", "content": "You are a senior software engineer reviewing a pull request. Provide clear, concise code review feedback."},
-    {"role": "user", "content": f"Please review this pull request diff:\n\n{diff_text}"}
+    {
+        "role": "system",
+        "content": "You are a senior software engineer reviewing a pull request. Provide clear, concise code review feedback."
+    },
+    {
+        "role": "user",
+        "content": f"Please review this pull request diff:\n\n{diff_text}"
+    }
 ]
 
 # Try AI review
 try:
     response = openai.ChatCompletion.create(
-        model="openai/gpt-3.5-turbo",  # You can use other OpenRouter models like mistralai/mixtral-8x7b
+        model="openai/gpt-3.5-turbo",  # You can also try: mistralai/mixtral-8x7b, anthropic/claude-3-sonnet
         messages=messages,
     )
     review_comment = response.choices[0].message.content
     pr.create_issue_comment(f"🤖 **AI Review Summary** (via OpenRouter):\n\n{review_comment}")
+
+except openai.error.AuthenticationError:
+    pr.create_issue_comment("❌ OpenRouter API authentication failed. Please check your API key.")
+    sys.exit(1)
+
+except openai.error.RateLimitError:
+    pr.create_issue_comment("⚠️ OpenRouter API rate limit reached. Try again later.")
+    sys.exit(1)
+
+except Exception as e:
+    pr.create_issue_comment(f"❌ Unexpected error during AI Review: {str(e)}")
+    sys.exit(1)
