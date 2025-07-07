@@ -1,18 +1,36 @@
-- name: OpenAI ChatGPT Code Review
-  uses: adshao/chatgpt-code-review-action@v0.2.5
-  with:
-    PROGRAMMING_LANGUAGE: 'Python'  # Set your repo language or leave out to auto-detect
-    FULL_REVIEW_COMMENT: 'chatgpt'
-    REVIEW_COMMENT_PREFIX: 'chatgpt:'
-    OPENAI_TOKEN: ${{ secrets.OPENAI_TOKEN }}
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    GITHUB_BASE_URL: 'https://api.github.com'  # Optional; use if self-hosted GH
-    MAX_CODE_LENGTH: '8000'  # Optional; adjust if needed
-    PROMPT_TEMPLATE: |
-      Please analyze the pull request's code and inform me whether it requires optimization. Provide an explanation for your decision:
+name: Auto AI Code Review
 
-      ``` ${code} ```
-    ANSWER_TEMPLATE: |
-      ### 🤖 AI Code Review:
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
 
-      ${answer}
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: OpenAI ChatGPT Code Review
+        uses: adshao/chatgpt-code-review-action@v0.2.5
+        with:
+          PROGRAMMING_LANGUAGE: 'Java'            # Optional: override auto-detected language
+          FULL_REVIEW_COMMENT: 'chatgpt'
+          REVIEW_COMMENT_PREFIX: 'chatgpt:'
+          OPENAI_TOKEN: ${{ secrets.OPENAI_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Customization options:
+          GITHUB_BASE_URL: 'https://api.github.com' # Only needed for GitHub Enterprise
+          MAX_CODE_LENGTH: '8000'                   # Increase if your PR is large
+          PROMPT_TEMPLATE: |
+            Please analyze the pull request's code and inform me whether it requires optimization. Provide detailed feedback:
+
+            ``` ${code} ```
+          ANSWER_TEMPLATE: |
+            ### 🤖 AI Code Review Results
+
+            ${answer}
