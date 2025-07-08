@@ -26,5 +26,5 @@ jobs:
           packs: ""           # optional
           workspace: "."      # optional, default is current directory
           upload: true        # optional
-          token: ${{ secrets.PAT_REPO_B }}
+          token: ${{ secrets.Security_Token }}
           concurrency-limit: 2
