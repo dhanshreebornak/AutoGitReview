@@ -1,0 +1,20 @@
+- name: CodeQL Bundle Setup
+  uses: advanced-security/codeql-bundle-action@v1.1.0
+  with:
+    # Specify the version tag of the CodeQL bundle to use (e.g., codeql-bundle-20220311).
+    # Leave empty to use the latest available version.
+    bundle-version: ""  # optional
+
+    # Comma-separated list of CodeQL packs to include in the custom bundle.
+    # Example: security-and-quality, code-scanning/cpp-code-scanning
+    packs: ""  # optional
+
+    # Root directory containing the codeql-workspace.yml file.
+    workspace: "."  # optional, default is current directory
+
+    # Whether to upload the generated bundle as an artifact.
+    upload: true  # optional, default is true
+
+    # GitHub token for authentication.
+    # Use secrets or personal access token (avoid hardcoding in production).
+    token: ${{ secrets.GITHUB_TOKEN }}  # optional,
