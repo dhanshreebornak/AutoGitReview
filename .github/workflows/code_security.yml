@@ -1,19 +1,30 @@
+name: CodeQL Bundle Workflow
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:  # allows manual runs from the GitHub UI
+
 jobs:
-  codeql:
+  codeql-bundle:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Python
         uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
 
       - name: CodeQL Bundle
         uses: advanced-security/codeql-bundle-action@v1.1.0
         with:
-          bundle-version: ""
-          packs: ""
-          workspace: "."
-          upload: true
+          bundle-version: ""  # optional, default is latest
+          packs: ""           # optional
+          workspace: "."      # optional, default is current directory
+          upload: true        # optional
           token: ${{ secrets.GITHUB_TOKEN }}
           concurrency-limit: 2
