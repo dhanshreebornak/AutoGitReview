@@ -17,4 +17,4 @@
 
     # GitHub token for authentication.
     # Use secrets or personal access token (avoid hardcoding in production).
-    token: ${{ secrets.GITHUB_TOKEN }}  # optional,
+    token: ${{ secrets.GITHUB_TOKEN }}  # optional
