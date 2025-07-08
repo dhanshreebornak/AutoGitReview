@@ -26,5 +26,5 @@ jobs:
           packs: ""           # optional
           workspace: "."      # optional, default is current directory
           upload: true        # optional
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT_REPO_B }}
           concurrency-limit: 2
