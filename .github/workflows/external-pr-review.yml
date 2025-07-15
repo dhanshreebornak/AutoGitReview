@@ -31,4 +31,5 @@ jobs:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           PAT_REPO_B: ${{ secrets.PAT_REPO_B }}
           TARGET_REPO: 'dhanshreebornak/JavaSample'
+          TARGET_PR_NUMBER: ${{ github.event.pull_request.number }}
           
