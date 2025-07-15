@@ -7,15 +7,6 @@ on:
       - synchronize
       - reopened
       
-  workflow_dispatch:
-    inputs:
-      repo:
-        description: 'Target repo (e.g. dhanshreebornak/other-repo)'
-        required: true
-      pr:
-        description: 'Target PR number (e.g. 5)'
-        required: true
-
 jobs:
   review:
     runs-on: ubuntu-latest
@@ -39,5 +30,5 @@ jobs:
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           PAT_REPO_B: ${{ secrets.PAT_REPO_B }}
-          TARGET_REPO: ${{ github.event.inputs.repo }}
-          TARGET_PR_NUMBER: ${{ github.event.inputs.pr }}
+          TARGET_REPO: 'dhanshreebornak/JavaSample'
+          
