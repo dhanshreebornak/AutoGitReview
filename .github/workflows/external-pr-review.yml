@@ -6,7 +6,7 @@ on:
       - opened
       - synchronize
       - reopened
-      
+
 jobs:
   review:
     runs-on: ubuntu-latest
@@ -32,4 +32,8 @@ jobs:
           PAT_REPO_B: ${{ secrets.PAT_REPO_B }}
           TARGET_REPO: 'dhanshreebornak/JavaSample'
           TARGET_PR_NUMBER: ${{ github.event.pull_request.number }}
-          
+
+      - name: Enable debug logging
+        run: |
+          echo "Enabling debug logging..."
+          echo "##[debug]Debug logging enabled"
